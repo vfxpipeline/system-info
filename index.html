@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>File System Application</title>
+    <script>window.$ = window.jQuery = require('jquery');</script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"
+          integrity="sha384-PmY9l28YgO4JwMKbTvgaS7XNZJ30MK9FAZjjzXtlqyZCqBY6X6bXIkM++IkyinN+" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap-theme.min.css"
+          integrity="sha384-jzngWsPS6op3fgRCDTESqrEJwRKck+CILhJVO5VvaAZCq8JYf8HsR/HPpBOOPZfR" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"
+            integrity="sha384-vhJnz1OVIdLktyixHY4Uk3OHEwdQqPppqYR8+5mjsauETgLOcEynD9oPHhhz18Nw"
+            crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+    <script src="http://momentjs.com/downloads/moment.js" type="application/javascript" ></script>
+    <style>
+        body {
+            background: #333333;
+        }
+
+        .progress {
+            background: transparent;
+        }
+    </style>
+
+</head>
+<body>
+    <nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Brand</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">Link</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Link</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+    <div class="container-fluid">
+    <img style="max-width: 1000px; width: 100%; padding: 15px; box-shadow: 5px 5px 50px 5px #000000;"
+         src="https://raw.githubusercontent.com/Giphy/GiphyAPI/master/api_giphy_header.gif">
+    <div class="progress" style="margin-top: 35px; background-color: transparent;">
+        <div class="cpu-progress progress-bar progress-bar-success" role="progressbar"
+             aria-valuemin="0" aria-valuemax="100" style="width:0%">
+        </div>
+    </div>
+    <input class="btn btn-warning" onclick="open_notepad();" type="button" value="Open Notepad">
+    <input class="btn btn-danger" onclick="open_folder();" type="button" value="Open Folder">
+    <div>
+        <p id="uptime_timer"> Uptime </p>
+    </div>
+
+</div>
+
+</body>
+
+<script>
+    const ipcRenderer = require('electron').ipcRenderer;
+    ipcRenderer.send('get-cpu', {});
+    ipcRenderer.on('cpu', function (event, data) {
+        $('.cpu-progress').css('width', data + '%').attr('aria-valuenow', data).text(data + ' CPU');
+    });
+
+    ipcRenderer.on('uptime', function (event, data) {
+        var uptime = moment.utc(data*1000).format('HH:mm:ss');
+        document.getElementById("uptime_timer").innerHTML = uptime
+
+    });
+
+    function open_notepad() {
+        ipcRenderer.send('open-notepad', {})
+    }
+
+    function open_folder() {
+        ipcRenderer.send('open-folder', {})
+    }
+
+</script>
+
+
+</html>

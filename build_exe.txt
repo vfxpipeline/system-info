@@ -1,0 +1,1 @@
+electron-packager "D:\Development\Electron\SystemMonitor" systemInfo --platform=win32 --arch=x64
